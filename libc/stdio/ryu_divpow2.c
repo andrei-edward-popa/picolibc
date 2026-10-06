@@ -17,6 +17,11 @@
 
 #include "ryu/f2s_intrinsics.h"
 
+#if __SIZEOF_DOUBLE__ == 4 && __SIZEOF_LONG_DOUBLE__ == 4
+/* Exact high-word factors for the complete binary32 exponent range. */
+#include "ryu_float_table.h"
+#endif
+
 // It seems to be slightly faster to avoid uint128_t here, although the
 // generated code for uint128_t looks slightly nicer.
 static inline uint32_t
@@ -66,15 +71,23 @@ __mulPow5InvDivPow2(const uint32_t m, const uint32_t q, const int32_t j)
     // lookup table are the correct bits for [2^x / 5^y], so we have to add 1 here. Note that we
     // rely on the fact that the added 1 that's already stored in the table never overflows into the
     // upper 64 bits.
+#if __SIZEOF_DOUBLE__ == 4 && __SIZEOF_LONG_DOUBLE__ == 4
+    return mulShift32(m, binary32_invpow5[q], j);
+#else
     uint64_t pow5[2];
     __double_computeInvPow5(q, pow5);
     return mulShift32(m, pow5[1] + 1, j);
+#endif
 }
 
 uint32_t
 __mulPow5divPow2(const uint32_t m, const uint32_t i, const int32_t j)
 {
+#if __SIZEOF_DOUBLE__ == 4 && __SIZEOF_LONG_DOUBLE__ == 4
+    return mulShift32(m, binary32_pow5[i], j);
+#else
     uint64_t pow5[2];
     __double_computePow5(i, pow5);
     return mulShift32(m, pow5[1], j);
+#endif
 }
