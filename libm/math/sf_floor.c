@@ -27,11 +27,12 @@
 float
 floorf(float x)
 {
-    __int32_t  i0, j0;
+    __int32_t  i0;
+    int        j0;
     __uint32_t i, ix;
     GET_FLOAT_WORD(i0, x);
     ix = (i0 & 0x7fffffff);
-    j0 = (ix >> 23) - 0x7f;
+    j0 = (int)(ix >> 23) - 0x7f;
     if (j0 < 23) {
         if (j0 < 0) { /* raise inexact if x != 0 */
             if (i0 >= 0) {
