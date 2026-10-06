@@ -22,6 +22,16 @@ _BEGIN_STD_C
 #define _JBTYPE long
 #endif
 
+#ifdef __STM8__
+#ifdef __STM8_LARGE__
+#define _JBLEN 9
+#define _JBTYPE unsigned char
+#else
+#define _JBLEN 4
+#define _JBTYPE unsigned short
+#endif
+#endif
+
 #if defined(__or1k__) || defined(__or1knd__)
 /*
  * r1, r2, r9, r14, r16 .. r30, SR.
