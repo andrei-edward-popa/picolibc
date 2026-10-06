@@ -221,7 +221,6 @@ srcs_dtoa_ryu = [
   'atod_ryu.c',
   'atof_ryu.c',
   'dtoa_ryu.c',
-  'ftoa_ryu.c',
   'ryu_divpow2.c',
   'ryu_log10.c',
   'ryu_log2pow5.c',
@@ -240,6 +239,11 @@ srcs_dtoa_float = [
 
 if io_float_exact
   srcs_stdio += srcs_dtoa_ryu
+  if host_cpu_family == 'stm8'
+    srcs_stdio += ['../machine/stm8/ftoa.c']
+  else
+    srcs_stdio += ['ftoa_ryu.c']
+  endif
 else
   srcs_stdio += srcs_dtoa_float
 endif
