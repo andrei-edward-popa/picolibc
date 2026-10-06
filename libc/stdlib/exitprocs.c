@@ -129,7 +129,8 @@ __call_exitprocs(int code, void *param)
 }
 
 #ifdef __INIT_FINI_ARRAY
-static const void *__call_exitprocs_ref __section(".fini_array_onexit") __used = __call_exitprocs;
+static void (* const __call_exitprocs_ref)(void) __section(".fini_array_onexit") __used
+= __call_exitprocs;
 #endif
 
 #endif
