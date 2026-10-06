@@ -54,7 +54,12 @@
 
 #define FTOA_MAX_10_EXP   38
 #define FTOA_MIN_10_EXP   (-37)
+#if defined(__STM8__) && defined(__IO_FLOAT_EXACT)
+/* The byte converter can emit every digit of any finite binary32. */
+#define FTOA_MAX_DIG 112
+#else
 #define FTOA_MAX_DIG      9
+#endif
 #define FTOA_SCALE_UP_NUM 6
 #define FTOA_ROUND_NUM    (FTOA_MAX_DIG + 1)
 
