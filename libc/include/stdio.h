@@ -669,7 +669,9 @@ __printf_float(float f)
 #elif _PICOLIBC_PRINTF == __IO_VARIANT_FLOAT
 #define printf_float(x) __printf_float(x)
 #define _HAS_IO_LONG_LONG
+#if defined(__IO_POS_ARGS) || !defined(__STM8__)
 #define _HAS_IO_POS_ARGS
+#endif
 #define _HAS_IO_C99_FORMATS
 #ifdef __IO_PERCENT_B
 #define _HAS_IO_PERCENT_B
@@ -678,7 +680,9 @@ __printf_float(float f)
 #else /* _PICOLIBC_PRINTF == __IO_VARIANT_DOUBLE */
 #define printf_float(x) ((double)(x))
 #define _HAS_IO_LONG_LONG
+#if defined(__IO_POS_ARGS) || !defined(__STM8__)
 #define _HAS_IO_POS_ARGS
+#endif
 #define _HAS_IO_C99_FORMATS
 #define _HAS_IO_DOUBLE
 #if defined(__MB_CAPABLE) || defined(__IO_WCHAR)

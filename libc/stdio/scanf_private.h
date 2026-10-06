@@ -94,7 +94,9 @@
 #if __SIZEOF_LONG_LONG__ > __SIZEOF_LONG__
 #define _NEED_IO_LONG_LONG
 #endif
+#if defined(__IO_POS_ARGS) || !defined(__STM8__)
 #define _NEED_IO_POS_ARGS
+#endif
 #define _NEED_IO_C99_FORMATS
 #ifdef __IO_PERCENT_B
 #define _NEED_IO_PERCENT_B
@@ -108,7 +110,9 @@
 #if __SIZEOF_LONG_LONG__ > __SIZEOF_LONG__
 #define _NEED_IO_LONG_LONG
 #endif
+#if defined(__IO_POS_ARGS) || !defined(__STM8__)
 #define _NEED_IO_POS_ARGS
+#endif
 #define _NEED_IO_C99_FORMATS
 #ifdef __IO_PERCENT_B
 #define _NEED_IO_PERCENT_B
