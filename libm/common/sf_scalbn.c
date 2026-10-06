@@ -29,7 +29,8 @@ static const float two25 = 3.355443200e+07, /* 0x4c000000 */
 float
 scalbnf(float x, int n)
 {
-    __int32_t  k, ix;
+    __int32_t  ix;
+    int        k;
     __uint32_t hx;
 
     GET_FLOAT_WORD(ix, x);
@@ -50,18 +51,21 @@ scalbnf(float x, int n)
         return x + x;                 /* NaN or Inf */
     if (n > OVERFLOW_INT)             /* in case integer overflow in n+k */
         return __math_oflowf(ix < 0); /*overflow*/
+    /* Bound the exponent addition in both directions for narrow int. */
+    if (n < -OVERFLOW_INT)
+        return __math_uflowf(ix < 0);
     k = k + n;
     if (k > FLT_LARGEST_EXP)
         return __math_oflowf(ix < 0); /* overflow  */
     if (k > 0)                        /* normal result */
     {
-        SET_FLOAT_WORD(x, (ix & 0x807fffff) | (k << 23));
+        SET_FLOAT_WORD(x, (ix & 0x807fffff) | ((__int32_t)k << 23));
         return x;
     }
     if (k <= -25)
         return __math_uflowf(ix < 0); /*underflow*/
     k += 25;                          /* subnormal result */
-    SET_FLOAT_WORD(x, (ix & 0x807fffff) | (k << 23));
+    SET_FLOAT_WORD(x, (ix & 0x807fffff) | ((__int32_t)k << 23));
     return check_uflowf(x * twom25);
 }
 
