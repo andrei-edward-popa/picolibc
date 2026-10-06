@@ -1,0 +1,31 @@
+# Copyright (c) 2026 Andrei-Edward Popa
+# SPDX-License-Identifier: BSD-3-Clause
+
+[binaries]
+c = ['stm8-unknown-elf-gcc', '-nostdlib']
+ar = 'stm8-unknown-elf-ar'
+as = 'stm8-unknown-elf-as'
+nm = 'stm8-unknown-elf-nm'
+strip = 'stm8-unknown-elf-strip'
+
+[host_machine]
+system = 'none'
+cpu_family = 'stm8'
+cpu = 'stm8'
+endian = 'big'
+
+[properties]
+skip_sanity_check = true
+needs_exe_wrapper = true
+default_alignment = 1
+# Defaults describe the near-code region and SRAM of an STM8S207.
+# Applications can override the memory symbols in their linker script.
+default_flash_addr = '0x00008080'
+default_flash_size = '0x00007f80'
+default_ram_addr = '0x00000100'
+default_ram_size = '0x00001700'
+default_stack_size = '0x00000400'
+additional_sections = ['vector']
+default_vector_addr = '0x00008000'
+default_vector_size = '0x00000080'
+default_vector_contents = ['KEEP (*(.vectors))']
