@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 # Copyright © 2022 Keith Packard
+# Copyright (c) 2026 Andrei-Edward Popa
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -35,6 +36,12 @@
 
 srcs_machine = [
   'setjmp.S',
+  'memcpy.S',
+  'memset.S',
+  'memmove.S',
+  'memcmp.S',
+  'strlen.S',
+  'strcmp.S',
 ]
 
 subdir('machine')

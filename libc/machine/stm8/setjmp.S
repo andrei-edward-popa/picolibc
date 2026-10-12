@@ -2,11 +2,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifdef __STM8_LARGE__
-    .stm8_model "large"
-#else
-    .stm8_model "medium"
-#endif
+#include "stm8-string.h"
+
 /* STM8 SDCC call(1): jmp_buf = SP, PC, software FP, scratch pointer.
  * SP is the value after setjmp returns. The last word is longjmp scratch;
  * the saved environment remains reusable.
@@ -15,6 +12,7 @@
     .global _setjmp
     .type _setjmp, @function
 _setjmp:
+    STM8_CFI_START
 #ifdef __STM8_LARGE__
 /* Large model: SP[0:2], PC[2:5], FP[5:7], scratch[7:9]. */
     ldw y, sp
@@ -28,21 +26,25 @@ _setjmp:
     ldw (5, x), y
     clrw x
     retf
+    .cfi_endproc
     .size _setjmp, .-_setjmp
     .section .text.longjmp, "ax", @progbits
     .global _longjmp
     .type _longjmp, @function
 _longjmp:
+    STM8_CFI_START
     ldw y, (4, sp)
     jrne .Lnonzero
     incw y
 .Lnonzero:
     pushw y
+    .cfi_adjust_cfa_offset 2
     ldw y, sp
     incw y
     ldw (7, x), y
     ld a, (5, x)
     ld __stm8_frame_pointer, a
+    .cfi_undefined 8
     ld a, (6, x)
     ld __stm8_frame_pointer+1, a
     ld a, (x)
@@ -50,6 +52,8 @@ _longjmp:
     ld a, (1, x)
     ld yl, a
     ldw sp, y
+    /* The stack now belongs to the restored, nonlocal continuation. */
+    .cfi_undefined 11
     ld a, (7, x)
     ld yh, a
     ld a, (8, x)
@@ -63,6 +67,7 @@ _longjmp:
     push a
     ldw x, y
     retf
+    .cfi_endproc
     .size _longjmp, .-_longjmp
 #else
     ldw y, sp
@@ -74,21 +79,25 @@ _longjmp:
     ldw (4, x), y
     clrw x
     ret
+    .cfi_endproc
     .size _setjmp, .-_setjmp
     .section .text.longjmp, "ax", @progbits
     .global _longjmp
     .type _longjmp, @function
 _longjmp:
+    STM8_CFI_START
     ldw y, (3, sp)
     jrne .Lnonzero
     incw y
 .Lnonzero:
     pushw y
+    .cfi_adjust_cfa_offset 2
     ldw y, sp
     incw y
     ldw (6, x), y
     ld a, (4, x)
     ld __stm8_frame_pointer, a
+    .cfi_undefined 8
     ld a, (5, x)
     ld __stm8_frame_pointer+1, a
     ld a, (x)
@@ -96,6 +105,8 @@ _longjmp:
     ld a, (1, x)
     ld yl, a
     ldw sp, y
+    /* The stack now belongs to the restored, nonlocal continuation. */
+    .cfi_undefined 11
     ld a, (6, x)
     ld yh, a
     ld a, (7, x)
@@ -105,6 +116,7 @@ _longjmp:
     pushw x
     ldw x, y
     ret
+    .cfi_endproc
     .size _longjmp, .-_longjmp
 #endif
     .comm __stm8_frame_pointer, 2, 1
